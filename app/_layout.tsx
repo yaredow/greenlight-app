@@ -4,6 +4,7 @@ import { QueryProvider } from "@/lib/query-provider";
 import { useOnlineManager } from "@/hooks/use-online-manager";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { PaperProvider } from "react-native-paper";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -23,7 +24,9 @@ export default function RootLayout() {
 
   return (
     <QueryProvider>
-      <Stack />
+      <PaperProvider>
+        <Stack screenOptions={{ headerShown: false }} />
+      </PaperProvider>
     </QueryProvider>
   );
 }
