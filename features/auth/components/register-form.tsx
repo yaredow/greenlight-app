@@ -2,33 +2,57 @@ import { StyleSheet, View } from "react-native";
 import { Button, Text, TextInput, useTheme } from "react-native-paper";
 import { useForm } from "@tanstack/react-form";
 import { router } from "expo-router";
-import { loginSchema, type LoginFormData } from "../schemas/auth.schema";
-import Toast from "react-native-toast-message";
+import { registerSchema, type RegisterFormData } from "../schemas/auth.schema";
+import { useRegister } from "../hooks/mutations/use-register";
 
-export const LoginForm = () => {
+export const RegisterForm = () => {
   const { colors } = useTheme();
+  const { mutate: registerUser, isPending } = useRegister();
+
   const form = useForm({
     defaultValues: {
+      name: "",
       email: "",
       password: "",
-    } as LoginFormData,
+    } as RegisterFormData,
     onSubmit: async ({ value }) => {
-      Toast.show({
-        type: "success",
-        text1: "Success",
-        text2: "You have successfully logged in.",
-      });
+      registerUser(value);
     },
     validators: {
-      onSubmit: loginSchema,
+      onSubmit: registerSchema,
     },
   });
 
   return (
     <View>
       <Text variant="headlineLarge" style={styles.title}>
-        Login
+        Create Account
       </Text>
+
+      <form.Field name="name">
+        {(field) => (
+          <View style={styles.field}>
+            <TextInput
+              label="Name"
+              mode="outlined"
+              value={field.state.value}
+              onChangeText={field.handleChange}
+              onBlur={field.handleBlur}
+              autoCapitalize="words"
+            />
+            {field.state.meta.errors ? (
+              <Text
+                variant="bodySmall"
+                style={{ color: colors.error, marginLeft: 12 }}
+              >
+                {(field.state.meta.errors as { message: string }[])
+                  .map((e) => e.message)
+                  .join(", ")}
+              </Text>
+            ) : null}
+          </View>
+        )}
+      </form.Field>
 
       <form.Field name="email">
         {(field) => (
@@ -84,22 +108,24 @@ export const LoginForm = () => {
       <Button
         mode="contained"
         onPress={() => form.handleSubmit()}
+        loading={isPending}
+        disabled={isPending}
         style={styles.button}
       >
-        Sign In
+        Sign Up
       </Button>
 
       <View style={styles.footer}>
         <Text variant="bodyMedium" style={{ color: colors.onSurfaceVariant }}>
-          Don&apos;t have an account?{" "}
+          Already have an account?{" "}
         </Text>
         <Button
           mode="text"
           compact
-          onPress={() => router.push("/(auth)/register")}
+          onPress={() => router.push("/(auth)/login")}
           labelStyle={styles.linkLabel}
         >
-          Sign Up
+          Sign In
         </Button>
       </View>
     </View>
