@@ -3,21 +3,19 @@ import { Button, Text, TextInput, useTheme } from "react-native-paper";
 import { useForm } from "@tanstack/react-form";
 import { router } from "expo-router";
 import { loginSchema, type LoginFormData } from "../schemas/auth.schema";
-import Toast from "react-native-toast-message";
+import { useLogin } from "../hooks/mutations/use-login";
 
 export const LoginForm = () => {
   const { colors } = useTheme();
+  const { mutate: loginUser, isPending } = useLogin();
+
   const form = useForm({
     defaultValues: {
       email: "",
       password: "",
     } as LoginFormData,
     onSubmit: async ({ value }) => {
-      Toast.show({
-        type: "success",
-        text1: "Success",
-        text2: "You have successfully logged in.",
-      });
+      loginUser(value);
     },
     validators: {
       onSubmit: loginSchema,
@@ -85,6 +83,8 @@ export const LoginForm = () => {
         mode="contained"
         onPress={() => form.handleSubmit()}
         style={styles.button}
+        loading={isPending}
+        disabled={isPending}
       >
         Sign In
       </Button>

@@ -1,8 +1,9 @@
 import { request } from "@/lib/api";
 import { LoginFormData, RegisterFormData } from "../schemas/auth.schema";
+import { LoginResponse } from "../types/auth.type";
 
-export const logIn = async (data: LoginFormData) => {
-  return request("/v1/token/authentication", {
+export const logIn = async (data: LoginFormData): Promise<LoginResponse> => {
+  return request<LoginResponse>("/v1/tokens/authentication", {
     method: "POST",
     body: data,
   });

@@ -8,43 +8,49 @@ import { useEffect } from "react";
 import { PaperProvider } from "react-native-paper";
 import { netflixTheme } from "@/lib/colors";
 import Toast from "react-native-toast-message";
+import { useAuthStore } from "@/features/auth/store/auth.store";
 
 SplashScreen.preventAutoHideAsync();
 
-const isLoggedIn = false;
-
 export default function RootLayout() {
   useOnlineManager();
+  const { isAuthenticated, isRestoring, restoreToken } = useAuthStore();
   const [loaded, error] = useFonts({
     Inter_900Black,
   });
 
   useEffect(() => {
-    SplashScreen.hideAsync();
-  }, [loaded, error]);
+    restoreToken();
+  }, [restoreToken]);
 
-  if (!loaded && !error) {
+  useEffect(() => {
+    if (!isRestoring && (loaded || error)) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error, isRestoring]);
+
+  if ((!loaded && !error) || isRestoring) {
     return null;
   }
 
   return (
     <QueryProvider>
       <PaperProvider theme={netflixTheme}>
-        <RootNavigator />
+        <RootNavigator isAuthenticated={isAuthenticated} />
       </PaperProvider>
     </QueryProvider>
   );
 }
 
-function RootNavigator() {
+function RootNavigator({ isAuthenticated }: { isAuthenticated: boolean }) {
   return (
     <>
       <StatusBar style="light" />
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Protected guard={isLoggedIn}>
+        <Stack.Protected guard={isAuthenticated}>
           <Stack.Screen name="(app)" />
         </Stack.Protected>
-        <Stack.Protected guard={!isLoggedIn}>
+        <Stack.Protected guard={!isAuthenticated}>
           <Stack.Screen name="(auth)" />
         </Stack.Protected>
       </Stack>

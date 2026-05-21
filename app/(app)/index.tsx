@@ -1,9 +1,7 @@
-import { useGetMovies } from "@/features/movies/hooks/query/use-get-movies";
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import { Text } from "react-native-paper";
 
 export default function Index() {
-  const { data: movies, isLoading } = useGetMovies();
-
   return (
     <View
       style={{
@@ -12,7 +10,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>{JSON.stringify(movies)}</Text>
+      <Text>Home page</Text>
     </View>
   );
 }
