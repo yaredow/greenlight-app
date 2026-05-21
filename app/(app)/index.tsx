@@ -3,7 +3,6 @@ import { Text, View } from "react-native";
 
 export default function Index() {
   const { data: movies, isLoading } = useGetMovies();
-  console.log("movies", movies);
 
   return (
     <View

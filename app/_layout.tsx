@@ -5,8 +5,11 @@ import { useOnlineManager } from "@/hooks/use-online-manager";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { PaperProvider } from "react-native-paper";
+import { netflixTheme } from "@/lib/colors";
 
 SplashScreen.preventAutoHideAsync();
+
+const isLoggedIn = false;
 
 export default function RootLayout() {
   useOnlineManager();
@@ -24,9 +27,22 @@ export default function RootLayout() {
 
   return (
     <QueryProvider>
-      <PaperProvider>
-        <Stack screenOptions={{ headerShown: false }} />
+      <PaperProvider theme={netflixTheme}>
+        <RootNavigator />
       </PaperProvider>
     </QueryProvider>
+  );
+}
+
+function RootNavigator() {
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Protected guard={isLoggedIn}>
+        <Stack.Screen name="(app)" />
+      </Stack.Protected>
+      <Stack.Protected guard={!isLoggedIn}>
+        <Stack.Screen name="(auth)" />
+      </Stack.Protected>
+    </Stack>
   );
 }
