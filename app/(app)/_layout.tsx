@@ -8,7 +8,15 @@ export default function AppLayout() {
     <Stack
       screenOptions={{
         contentStyle: { backgroundColor: theme.colors.background },
+        headerStyle: { backgroundColor: theme.colors.elevation.level2 },
+        headerTintColor: theme.colors.onSurface,
       }}
-    />
+    >
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="movies/create"
+        options={{ title: "Create Movie" }}
+      />
+    </Stack>
   );
 }

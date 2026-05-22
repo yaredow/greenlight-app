@@ -20,7 +20,7 @@ export class ApiError extends Error {
 
 interface RequestOptions extends Omit<RequestInit, "body"> {
   body?: unknown;
-  params?: Record<string, string | number | boolean | undefined>;
+  params?: object;
 }
 
 // 2. The core request function (THROWS errors for TanStack Query)
@@ -60,7 +60,6 @@ export const request = async <T>(
 
   if (res.status === 204) return null as T;
 
-  // Safely parse response based on content type
   let data;
   const contentType = res.headers.get("content-type");
   if (contentType && contentType.includes("application/json")) {
@@ -70,7 +69,15 @@ export const request = async <T>(
   }
 
   if (!res.ok) {
-    throw new ApiError(res.status, res.statusText, data);
+    const message =
+      typeof data === "object" && data !== null
+        ? (data as Record<string, unknown>)?.error
+          ? String((data as Record<string, unknown>).error)
+          : (data as Record<string, unknown>)?.message
+            ? String((data as Record<string, unknown>).message)
+            : res.statusText
+        : res.statusText;
+    throw new ApiError(res.status, message, data);
   }
 
   return data as T;

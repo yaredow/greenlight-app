@@ -13,7 +13,7 @@ export const useRegister = () => {
         type: "success",
         text1: "Registration successful",
         text2: "You can now log in",
-        onHide: () => router.push("/(auth)/login"),
+        onHide: () => router.push("/(auth)/activate"),
       });
     },
     onError: (error: Error) => {

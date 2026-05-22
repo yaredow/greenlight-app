@@ -15,3 +15,10 @@ export const register = async (data: RegisterFormData) => {
     body: data,
   });
 };
+
+export const activateAccount = async (token: string) => {
+  return request("/v1/users/activated", {
+    method: "PUT",
+    body: { token },
+  });
+};
