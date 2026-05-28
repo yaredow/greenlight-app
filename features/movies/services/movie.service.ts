@@ -12,36 +12,36 @@ type CreateMovieResponse = {
 };
 
 export const getMovie = async (id: number) => {
-  const token = useAuthStore.getState().token;
+  const accessToken = useAuthStore.getState().accessToken;
 
   return request<{ movie: Movie }>(`/v1/movies/${id}`, {
     method: "GET",
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
 };
 
 export const getMovies = async (filters?: MovieFilters) => {
-  const token = useAuthStore.getState().token;
+  const accessToken = useAuthStore.getState().accessToken;
 
   return request<PaginatedResponse<Movie>>("/v1/movies", {
     method: "GET",
     params: filters,
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
 };
 
 export const createMovie = async (data: CreateMovieFormData) => {
-  const token = useAuthStore.getState().token;
+  const accessToken = useAuthStore.getState().accessToken;
 
   return request<CreateMovieResponse>("/v1/movies", {
     method: "POST",
     body: data,
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   });
 };

@@ -1,37 +1,48 @@
 import { create } from "zustand";
 import * as SecureStore from "expo-secure-store";
 
-const TOKEN_KEY = "auth_token";
+const ACCESS_TOKEN_KEY = "access_token";
+const REFRESH_TOKEN_KEY = "refresh_token";
 
 interface AuthState {
-  token: string | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
   isRestoring: boolean;
-  setToken: (token: string) => Promise<void>;
+  setTokens: (accessToken: string, refreshToken: string) => Promise<void>;
   logout: () => Promise<void>;
   restoreToken: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()((set) => ({
-  token: null,
+  accessToken: null,
+  refreshToken: null,
   isAuthenticated: false,
 
   isRestoring: true,
 
-  setToken: async (token) => {
-    await SecureStore.setItemAsync(TOKEN_KEY, token);
-    set({ token, isAuthenticated: true });
+  setTokens: async (accessToken, refreshToken) => {
+    await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, accessToken);
+    await SecureStore.setItemAsync(REFRESH_TOKEN_KEY, refreshToken);
+    set({ accessToken, refreshToken, isAuthenticated: true });
   },
 
   logout: async () => {
-    await SecureStore.deleteItemAsync(TOKEN_KEY);
-    set({ token: null, isAuthenticated: false });
+    await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
+    await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
+    set({ accessToken: null, refreshToken: null, isAuthenticated: false });
   },
 
   restoreToken: async () => {
     try {
-      const token = await SecureStore.getItemAsync(TOKEN_KEY);
-      set({ token, isAuthenticated: !!token, isRestoring: false });
+      const accessToken = await SecureStore.getItemAsync(ACCESS_TOKEN_KEY);
+      const refreshToken = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
+      set({
+        accessToken,
+        refreshToken,
+        isAuthenticated: !!accessToken && !!refreshToken,
+        isRestoring: false,
+      });
     } catch {
       set({ isRestoring: false });
     }

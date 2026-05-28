@@ -9,6 +9,12 @@ export interface AuthenticationToken {
   expiry: string;
 }
 
+export interface RefreshToken {
+  token: string;
+  expires_at: string;
+}
+
 export interface LoginResponse {
   authentication_token: AuthenticationToken;
+  refresh_token: RefreshToken;
 }

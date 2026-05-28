@@ -27,13 +27,6 @@ export const useCreateMovie = () => {
       router.push(`/(app)/movies/${movie.id}`);
     },
     onError: (error) => {
-      alert(
-        JSON.stringify({
-          message: error.message,
-          status: (error as any).status,
-          data: (error as any).data,
-        }),
-      );
       Toast.show({
         type: "error",
         text1: "Failed to create movie",
