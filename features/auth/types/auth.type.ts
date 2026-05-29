@@ -18,3 +18,8 @@ export interface LoginResponse {
   authentication_token: AuthenticationToken;
   refresh_token: RefreshToken;
 }
+
+export interface RefreshResponse {
+  access_token: AuthenticationToken;
+  refresh_token: RefreshToken;
+}

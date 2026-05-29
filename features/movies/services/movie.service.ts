@@ -1,5 +1,4 @@
-import { request } from "@/lib/api";
-import { useAuthStore } from "@/features/auth/store/auth.store";
+import { api } from "@/lib/api";
 import {
   Movie,
   type MovieFilters,
@@ -12,36 +11,17 @@ type CreateMovieResponse = {
 };
 
 export const getMovie = async (id: number) => {
-  const accessToken = useAuthStore.getState().accessToken;
-
-  return request<{ movie: Movie }>(`/v1/movies/${id}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  return api.get(`v1/movies/${id}`).json<{ movie: Movie }>();
 };
 
 export const getMovies = async (filters?: MovieFilters) => {
-  const accessToken = useAuthStore.getState().accessToken;
-
-  return request<PaginatedResponse<Movie>>("/v1/movies", {
-    method: "GET",
-    params: filters,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  return api
+    .get("v1/movies", {
+      searchParams: filters as Record<string, string | undefined>,
+    })
+    .json<PaginatedResponse<Movie>>();
 };
 
 export const createMovie = async (data: CreateMovieFormData) => {
-  const accessToken = useAuthStore.getState().accessToken;
-
-  return request<CreateMovieResponse>("/v1/movies", {
-    method: "POST",
-    body: data,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  return api.post("v1/movies", { json: data }).json<CreateMovieResponse>();
 };

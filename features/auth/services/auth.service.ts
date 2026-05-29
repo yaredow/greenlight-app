@@ -1,24 +1,22 @@
-import { request } from "@/lib/api";
+import { api } from "@/lib/api";
 import { LoginFormData, RegisterFormData } from "../schemas/auth.schema";
 import { LoginResponse } from "../types/auth.type";
+import { useAuthStore } from "../store/auth.store";
 
 export const logIn = async (data: LoginFormData): Promise<LoginResponse> => {
-  return request<LoginResponse>("/v1/tokens/authentication", {
-    method: "POST",
-    body: data,
-  });
+  return api.post("v1/tokens/authentication", { json: data }).json<LoginResponse>();
 };
 
 export const register = async (data: RegisterFormData) => {
-  return request("/v1/users", {
-    method: "POST",
-    body: data,
-  });
+  return api.post("v1/users", { json: data }).json();
 };
 
 export const activateAccount = async (token: string) => {
-  return request("/v1/users/activated", {
-    method: "PUT",
-    body: { token },
-  });
+  return api.put("v1/users/activated", { json: { token } }).json();
+};
+
+export const logout = async () => {
+  const refreshToken = useAuthStore.getState().refreshToken;
+
+  return api.post("v1/tokens/revoke", { json: { refresh_token: refreshToken } }).json();
 };

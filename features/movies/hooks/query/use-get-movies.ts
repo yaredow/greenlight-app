@@ -1,5 +1,5 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
-import { ApiError } from "@/lib/api";
+import { HTTPError } from "@/lib/ky";
 import {
   Movie,
   type MovieFilters,
@@ -9,7 +9,7 @@ import { moviesKeys } from "../../consants/movies.keys";
 import { getMovies } from "../../services/movie.service";
 
 export const useGetMovies = (filters?: MovieFilters) => {
-  return useQuery<PaginatedResponse<Movie>, ApiError>({
+  return useQuery<PaginatedResponse<Movie>, HTTPError>({
     queryKey: moviesKeys.list(filters),
     queryFn: () => getMovies(filters),
     placeholderData: keepPreviousData,

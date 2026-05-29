@@ -1,11 +1,11 @@
 import { View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, Text, useTheme } from "react-native-paper";
-import { useAuthStore } from "@/features/auth/store/auth.store";
+import { useLogout } from "@/features/auth/hooks/mutations/use-logout";
 
 export default function Profile() {
   const { colors } = useTheme();
-  const logout = useAuthStore((s) => s.logout);
+  const { mutate: logout, isPending } = useLogout();
 
   return (
     <SafeAreaView
@@ -18,9 +18,10 @@ export default function Profile() {
       <View style={styles.footer}>
         <Button
           mode="outlined"
-          onPress={logout}
+          onPress={() => logout()}
           textColor={colors.error}
           style={styles.logout}
+          disabled={isPending}
         >
           Logout
         </Button>
