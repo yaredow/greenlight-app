@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "greenlight-app",
-    "slug": "greenlight-app",
+    "name": "glimpse-app",
+    "slug": "glimpse-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "greenlightapp",
+    "scheme": "glimpseapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
